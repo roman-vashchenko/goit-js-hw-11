@@ -16,6 +16,10 @@ function onSearch(event) {
   event.preventDefault();
   pixabayApiService.searchQuery =
     event.currentTarget.elements.searchQuery.value.trim();
+  if (pixabayApiService.searchQuery === '') {
+    return;
+  }
+  refs.searchForm.reset();
   pixabayApiService.resetPage();
   pixabayApiService.fetchImages();
 }
