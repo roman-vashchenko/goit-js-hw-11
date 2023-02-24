@@ -23,21 +23,69 @@ async function onSearch(event) {
     }
     refs.searchForm.reset();
     pixabayApiService.resetPage();
-    const getImages = await pixabayApiService.fetchImages();
-
-    console.log(getImages);
-    if (getImages.totalHits === 0) {
+    clearImgList();
+    const data = await pixabayApiService.fetchImages();
+    const images = data.hits;
+    console.log(data);
+    if (data.totalHits === 0) {
       refs.loadMoreBtn.style.display = 'none';
       return Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
-    } else if (getImages.totalHits) {
+    } else if (data.totalHits) {
       refs.loadMoreBtn.style.display = 'block';
-      return Notify.success(`Hooray! We found ${getImages.totalHits} images.`);
+      Notify.success(`Hooray! We found ${data.totalHits} images.`);
     }
+
+    const markup = images.reduce(
+      (markup, image) => createMarkup(image) + markup,
+      ''
+    );
+    appendImgToList(markup);
   } catch {}
 }
 
-async function onLoadMore() {
-  const loadMoreImages = await pixabayApiService.fetchImages();
+async function onLoadMore(markup) {
+  try {
+    const loadMoreImages = await pixabayApiService.fetchImages();
+    appendImgToList(markup);
+  } catch {}
+}
+
+function clearImgList() {
+  gallery.innerHTML = '';
+}
+
+function appendImgToList(markup) {
+  gallery.insertAdjacentHTML('beforeend', markup);
+}
+
+function createMarkup({
+  webformatURL,
+  largeImageURL,
+  tags,
+  likes,
+  views,
+  comments,
+  downloads,
+}) {
+  return `
+<div class="photo-card">
+  <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+  <div class="info">
+    <p class="info-item">
+      <b>Likes: ${likes}</b>
+    </p>
+    <p class="info-item">
+      <b>Views: ${views}</b>
+    </p>
+    <p class="info-item">
+      <b>Comments: ${comments}</b>
+    </p>
+    <p class="info-item">
+      <b>Downloads: ${downloads}</b>
+    </p>
+  </div>
+</div>
+  `;
 }
