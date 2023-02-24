@@ -15,6 +15,7 @@ body {
 img {
   width: 350px;
   height: 250px;
+  cursor: pointer;
 }
 
 .block-form {
