@@ -21,12 +21,12 @@ async function onSearch(event) {
     if (pixabayApiService.searchQuery === '') {
       return;
     }
+    refs.loadMoreBtn.style.display = 'none';
     refs.searchForm.reset();
     pixabayApiService.resetPage();
     clearImgList();
     const data = await pixabayApiService.fetchImages();
     const images = data.hits;
-    console.log(data);
     if (data.totalHits === 0) {
       refs.loadMoreBtn.style.display = 'none';
       return Notify.failure(
@@ -45,19 +45,30 @@ async function onSearch(event) {
   } catch {}
 }
 
-async function onLoadMore(markup) {
+async function onLoadMore() {
   try {
-    const loadMoreImages = await pixabayApiService.fetchImages();
+    const data = await pixabayApiService.fetchImages();
+    const images = data.hits;
+    const markup = images.reduce(
+      (markup, image) => createMarkup(image) + markup,
+      ''
+    );
     appendImgToList(markup);
+    if (data.totalHits <= 40 * pixabayApiService.page) {
+      refs.loadMoreBtn.style.display = 'none';
+      return Notify.info(
+        "We're sorry, but you've reached the end of search results."
+      );
+    }
   } catch {}
 }
 
 function clearImgList() {
-  gallery.innerHTML = '';
+  refs.gallery.innerHTML = '';
 }
 
 function appendImgToList(markup) {
-  gallery.insertAdjacentHTML('beforeend', markup);
+  refs.gallery.insertAdjacentHTML('beforeend', markup);
 }
 
 function createMarkup({
@@ -74,16 +85,20 @@ function createMarkup({
   <img src="${webformatURL}" alt="${tags}" loading="lazy" />
   <div class="info">
     <p class="info-item">
-      <b>Likes: ${likes}</b>
+      <b>Likes</b>
+      ${likes}
     </p>
     <p class="info-item">
-      <b>Views: ${views}</b>
+      <b>Views</b>
+      ${views}
     </p>
     <p class="info-item">
-      <b>Comments: ${comments}</b>
+      <b>Comments</b>
+      ${comments}
     </p>
     <p class="info-item">
-      <b>Downloads: ${downloads}</b>
+      <b>Downloads</b>
+      ${downloads}
     </p>
   </div>
 </div>

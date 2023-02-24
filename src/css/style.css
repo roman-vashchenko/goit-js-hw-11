@@ -12,8 +12,14 @@ body {
   line-height: 1.5;
 }
 
+img {
+  width: 350px;
+  height: 250px;
+}
+
 .block-form {
-  background-color: blue;
+  background-color: #0000ff;
+  margin-bottom: 15px;
 }
 
 .search-form {
@@ -30,24 +36,30 @@ body {
 }
 
 .load-more {
-  display: block;
-  width: 100px;
+  display: none;
+  width: 150px;
   margin: 0 auto;
+  cursor: pointer;
+  margin-bottom: 20px;
+  background-color: #0000ff;
+  border: transparent;
+  border-radius: 5px;
+  text-transform: uppercase;
+  color: #fafafa;
 }
 
 .gallery {
-  display: grid;
-  max-width: 1140px;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  grid-auto-rows: 240px;
-  grid-gap: 12px;
-  justify-content: center;
-  padding: 0;
-  list-style: none;
-  margin-left: auto;
-  margin-right: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 
-.load-more {
-  display: none;
+.info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
 }
