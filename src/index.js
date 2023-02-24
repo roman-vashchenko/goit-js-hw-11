@@ -1,4 +1,6 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import PixabayApiService from './js/pixabay-servise.js';
 
 const refs = {
@@ -9,6 +11,7 @@ const refs = {
 };
 
 const pixabayApiService = new PixabayApiService();
+const lightbox = new SimpleLightbox('.gallery a', { captionDelay: 250 });
 
 refs.searchForm.addEventListener('submit', onSearch);
 refs.loadMoreBtn.addEventListener('click', onLoadMore);
@@ -42,6 +45,7 @@ async function onSearch(event) {
       ''
     );
     appendImgToList(markup);
+    lightbox.refresh();
   } catch {}
 }
 
@@ -54,21 +58,14 @@ async function onLoadMore() {
       ''
     );
     appendImgToList(markup);
-    if (data.totalHits <= 40 * pixabayApiService.page) {
+    lightbox.refresh();
+    if (data.totalHits < 40 * pixabayApiService.page) {
       refs.loadMoreBtn.style.display = 'none';
       return Notify.info(
         "We're sorry, but you've reached the end of search results."
       );
     }
   } catch {}
-}
-
-function clearImgList() {
-  refs.gallery.innerHTML = '';
-}
-
-function appendImgToList(markup) {
-  refs.gallery.insertAdjacentHTML('beforeend', markup);
 }
 
 function createMarkup({
@@ -82,7 +79,7 @@ function createMarkup({
 }) {
   return `
 <div class="photo-card">
-  <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+  <a href="${largeImageURL}"><img src="${webformatURL}" alt="${tags}" loading="lazy" data-source="${largeImageURL}"/></a>
   <div class="info">
     <p class="info-item">
       <b>Likes</b>
@@ -103,4 +100,12 @@ function createMarkup({
   </div>
 </div>
   `;
+}
+
+function clearImgList() {
+  refs.gallery.innerHTML = '';
+}
+
+function appendImgToList(markup) {
+  refs.gallery.insertAdjacentHTML('beforeend', markup);
 }
