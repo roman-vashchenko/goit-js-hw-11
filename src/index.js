@@ -61,7 +61,7 @@ async function onLoadMore() {
     );
     appendImgToList(markup);
     lightbox.refresh();
-    if (data.totalHits < 40 * pixabayApiService.page) {
+    if (data.totalHits === pixabayApiService.page * 40) {
       refs.loadMoreBtn.style.display = 'none';
       return Notify.info(
         "We're sorry, but you've reached the end of search results."
