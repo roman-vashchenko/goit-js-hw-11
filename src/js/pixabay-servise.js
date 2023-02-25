@@ -18,4 +18,11 @@ export default class PixabayApiService {
     this.page += 1;
     return response.data;
   }
+  async additionalRequestImages() {
+    const url = `https://pixabay.com/api/?key=33776129-06b0afe52f3ec0e98d1b43427&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=20&page=${this.page}`;
+
+    const response = await axios.get(url);
+
+    return response.data;
+  }
 }

@@ -61,7 +61,15 @@ async function onLoadMore() {
     );
     appendImgToList(markup);
     lightbox.refresh();
-    if (data.totalHits === pixabayApiService.page * 40) {
+    if (data.totalHits < pixabayApiService.page * 40) {
+      const data = await pixabayApiService.additionalRequestImages();
+      const images = data.hits;
+      const markup = images.reduce(
+        (markup, image) => createMarkup(image) + markup,
+        ''
+      );
+      appendImgToList(markup);
+      lightbox.refresh();
       refs.loadMoreBtn.style.display = 'none';
       return Notify.info(
         "We're sorry, but you've reached the end of search results."
