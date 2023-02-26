@@ -10,6 +10,7 @@ body {
   background-color: #fafafa;
   color: #212121;
   line-height: 1.5;
+  padding-top: 110px;
 }
 
 img {
@@ -19,8 +20,10 @@ img {
 }
 
 .block-form {
+  position: fixed;
+  top: 0;
+  width: 100%;
   background-color: #0000ff;
-  margin-bottom: 15px;
 }
 
 .search-form {
